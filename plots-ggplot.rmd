@@ -25,14 +25,26 @@ library(here) # install.packages ("here")
 ```{r read-data, message=FALSE}
 
 ca_np <- read_csv (here("data/ca_np.csv"))
-
-ci_np <- read_excel(here("data", "ci_np.xlsx"))
-
 # also be written:
 #ca_np <- read_csv ("data/ca_np.csv")
 
+ci_np <- read_excel(here("data", "ci_np.xlsx"))
+```
+### Make my own first graph!
 
+We're going to make a line plot of year (x-vairable)vs visitors (y-vairable) in ggplot:
+Alt+I
+```{r}
+
+ggplot(data = ci_np, aes(x = year, y = visitors)) + 
+  geom_line()
 
 ```
+
+
+
+
+
+
 
 
