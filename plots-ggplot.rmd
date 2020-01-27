@@ -22,9 +22,11 @@ library(here) # install.packages ("here")
 ```
 
 #California Naitona Parks Data
-```{r read-data}
+```{r read-data, message=FALSE}
 
 ca_np <- read_csv (here("data/ca_np.csv"))
+
+ci_np <- read_excel(here("data", "ci_np.xlsx"))
 
 # also be written:
 #ca_np <- read_csv ("data/ca_np.csv")
