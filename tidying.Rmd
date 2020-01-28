@@ -1,0 +1,109 @@
+---
+title: "Tidying session"
+author: "Joni"
+date: "1/28/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE)
+
+# Attaching packages
+library(tidyverse)
+library(janitor)
+library(here)
+library(readxl)
+```
+
+### Read in inverts.xlsx
+
+```{r}
+inverts <- read_excel(here("data","inverts.xlsx"))
+```
+
+### `pivot_longer()`
+Use single colon (:) to indicate aseries of sequential columns. 
+
+```{r}
+inverts_long <- pivot_longer(data = inverts, 
+                             cols = '2016' : '2018',
+                             names_to = "year",
+                             values_to = "sp_count")
+
+#What if you want some in series and some Not in series?
+# c('2016':'2018', '2020')
+```
+
+What if we want to get it back into wide format?
+```{r}
+inverts_wide <- inverts_long %>%
+  pivot_wider(names_from = common_name, 
+              values_from = sp_count)
+```
+### `janitor:: clean_names()`
+
+
+```{r}
+inverts_wide <- inverts_wide %>%
+  clean_names()
+```
+### `tidyr:: unite()` to combine information from columns
+
+Examples: merge the site code and year into a single column called "site_year"
+```{r}
+inverts_unite <- inverts_long %>%
+  unite(col = "site_year",
+        c(site, year),
+        sep = "_")
+
+```
+### kActivity:
+
+Create a new object called 'inverts_moyr' staring from inverts_long that unites the month and year columns into a single column named "mo_yr", using a slash "/" as the separator.. then try some other fun separator
+
+```{r}
+inverts_moyr <- inverts_long %>%
+  unite(col = "mo_yr",
+        c(month, year),
+        sep = "/")
+
+```
+### `tidyr:: separate()`
+```{r}
+inverts_sep <- inverts_unite %>%
+  separate(col = site_year,
+           into = c("my_site", "my_year"))
+```
+
+### `stringr` +`mutate()`
+
+mutate: add a column or update a column. better to add a column than update
+
+Example: using built-in 'rees' dataset with mutate() to add 5 to all of the tree heights
+
+```{r}
+trees_new <- trees %>% 
+  mutate(height_update = Height + 5)
+```
+### `str_replace()`
+replace places in California under common_name with CA
+```{r}
+ca_abbr <- inverts %>%
+  mutate(common_name = 
+          str_replace(common_name, 
+                      pattern = "california",
+                      replacement = "CA") )
+```
+
+Example: In the common_name column, you want to replace the word "spiny" with the word "awesome"
+
+store as `awesom_lobsters`
+
+```{r}
+awesome_lobsters <- inverts %>%
+  mutate(common_name = 
+          str_replace(common_name, 
+                      pattern = "spiny",
+                      replacement = "awesome") )
+```
+
