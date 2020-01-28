@@ -1,0 +1,55 @@
+---
+title: "Filters and joins"
+author: "Joni"
+date: "1/28/2020"
+output: html_document
+---
+### packwrap to wrap up the packages you use
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE)
+library(tidyverse)
+library(readxl)
+library(here)
+library(kableExtra)
+```
+
+Get some fish.csv and kelp_fronts.xlsx (with multiple worksheets)
+
+```{r}
+fish <- read_csv(here("data", "fish.csv"))
+kelp_abur <- read_excel(here("data", "kelp_fronds.xlsx"),
+                        sheet = "abur")
+
+
+
+```
+#kelp_abur <- read_excel(here("data", "kelp_fronds.xlsx"),
+                        sheet = "carp")
+                        
+                        
+### Filter by an exact match
+
+`==` asks if it is an exact match.
+
+Example1: only keep obs from `fish` where the common_name vairable matches (==) "garibaldi"
+
+```{r}
+fish_gariboldi <- fish %>% 
+  filter(common_name == "garibaldi")
+```
+>, <, >=, <=, == can be used for numerical filtering
+
+Create a subset of fish called fish_over50, starting from fish, wher the total_count is greater than or equal to 50
+```{r}
+fish_over50 <- fish %>% 
+  filter(total_count >= 50)
+```
+### What if we want to filter by this or this?
+You can use the vertical line `|` "or"
+```{r}
+fish_2sp <- fish %>%
+  filter(common_name == "garibaldi" | common_name == "blacksmith")
+```
+
+
+
