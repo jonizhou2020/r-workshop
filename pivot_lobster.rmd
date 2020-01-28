@@ -3,6 +3,8 @@ title: "Pivot Lobsters"
 author: "Joni"
 date: "1/27/2020"
 output: html_document
+editor_options: 
+  chunk_output_type: console
 ---
 
 Attaching our packages and reading in data
@@ -13,7 +15,7 @@ library(here)
 library(skimr) #install.packages("skimr")
 library(kableExtra) #install.packages ("kableExtra")
 # read in lobster data
-lobsters <- read_xlsx(here("data", "lobsters.xlsx"),
+lobsters <- read_xlsx(here("data", "lobsters2.xlsx"),
                       skip = 4)
 
 ```
