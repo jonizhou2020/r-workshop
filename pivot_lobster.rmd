@@ -1,0 +1,102 @@
+---
+title: "Pivot Lobsters"
+author: "Joni"
+date: "1/27/2020"
+output: html_document
+---
+
+Attaching our packages and reading in data
+```{r}
+library(tidyverse)
+library(readxl)
+library(here)
+library(skimr) #install.packages("skimr")
+library(kableExtra) #install.packages ("kableExtra")
+# read in lobster data
+lobsters <- read_xlsx(here("data", "lobsters.xlsx"),
+                      skip = 4)
+
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+Viewing our data with skimr
+```{r}
+skimr::skim(lobsters) # or skim(lobsters)
+
+```
+
+#Pivot Tables
+In R, Pivot tables are: `group_by() %>% summarize()`
+`n()` function will count observations
+
+
+```{r}
+#Group by year
+lobsters %>% #control +shift
+  group_by(year) %>%
+  summarize(count_by_year = n())
+#Group by year and site
+lobsters %>% #control +shift
+  group_by(year, site) %>%
+  summarize(count_by_year_site = n())
+
+#Group by  site and year
+lobsters %>% #control +shift
+  group_by(site, year) %>%
+  summarize(count_by_site_year = n())
+```
+
+
+Summarize by multiple variables and assign as an object
+```{r}
+siteyear_summary <- lobsters %>%
+  group_by (site, year) %>%
+  summarize(count_by_site_year = n(),
+            mean_size_mm = mean(size_mm, na.rm = TRUE),
+            sd_size_mm = sd(size_mm, na.rm = TRUE)) # allows r to calculate mean with missing values
+```
+            
+Table formatting with `kableExtra::kable()`
+```{r}
+siteyear_summary %>%
+  kable()
+```
+## Activity
+1. build from our analyses: calculate the median lobster size for each site and year (hint:`size_mm` and a function called `median()`
+2. create a ggplot and save
+3. sync this to github
+
+```{r}
+siteyear_median <- lobsters %>%
+  group_by (site, year) %>%
+  summarize(count_by_site_year = n(),
+            median_size_mm = median(size_mm, na.rm = TRUE)
+            )
+ggplot(data = siteyear_median, aes(x =year, y = median_size_mm, color =site)) +
+  geom_line()
+ggsave(here("figures", "lobsters-plot.png"))
+```
+
